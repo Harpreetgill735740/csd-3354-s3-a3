@@ -56,23 +56,23 @@ class CountrySide
     public void TraverseVillages(Village CurrentVillage)
     {
         if (Hugi.FoundAstrilde) return;
-
-        // Here Hugi records his travels, as any Norse Hero will do:
         Hugi.HugiJournal.Add(new JournalEntry(CurrentVillage.VillageName, CurrentVillage.distanceFromPreviousVillage));
-
-        Console.WriteLine("I am in {0}", CurrentVillage.VillageName);
-
-        if (CurrentVillage.isAstrildgeHere)
+        try
         {
-            Console.WriteLine("I found Dear Astrildge in {0}", CurrentVillage.VillageName);
-            Console.WriteLine("**** FEELING HAPPY!!! ******");
-            Console.WriteLine("Astrilde, I walked {0} vika to find you. Will you marry me?", Hugi.CalculateDistanceWalked());
-            Hugi.FoundAstrilde = true;
+            Console.WriteLine("I am in {0}", CurrentVillage.VillageName);
+
+            if (CurrentVillage.isAstrildgeHere)
+            {
+                Console.WriteLine("I found Dear Astrildge in {0}", CurrentVillage.VillageName);
+                Console.WriteLine("**** FEELING HAPPY!!! ******");
+                Console.WriteLine("Astrilde, I walked {0} vika to find you. Will you marry me?", Hugi.CalculateDistanceWalked());
+                Hugi.FoundAstrilde = true;
+            }
+            TraverseVillages(CurrentVillage.east);
+            TraverseVillages(CurrentVillage.west);
+
         }
-
-        // TO DO: Complete this section to make the Recursion work           
-
-
+        catch (NullReferenceException) { }
     }
 
     public void Run()
@@ -80,19 +80,22 @@ class CountrySide
         Alst = new Village("Alst", false);
         Schvenig = new Village("Schvenig", false);
         Wessig = new Village("Wessig", false);
-        Uster = new Village("Uster", true);
-        Maeland = new Village("Maeland", false);
+        Maeland = new Village("Maeland", true);
         Helmholtz = new Village("Helmholtz", false);
-       
+        Uster = new Village("Uster", true);
+        Badden = new Village("Badden", false);
+
         Alst.VillageSetup(0, Schvenig, Wessig);
         Schvenig.VillageSetup(14, Maeland, Helmholtz);
-        Wessig.VillageSetup(19, Uster, Badden);
-        Maeland.VillageSetup(9, null,null);
+        Maeland.VillageSetup(9, null, Helmholtz);
         Helmholtz.VillageSetup(28, null, null);
-       Uster.VillageSetup(28, null, null);
+        Wessig.VillageSetup(19, Uster, Badden);
+        Uster.VillageSetup(28, null, null);
         Badden.VillageSetup(11, null, null);
-      
 
+        this.TraverseVillages(Alst);
+        this.Announcement();
+        Console.ReadLine();
     }
 
     public void Announcement()
@@ -101,7 +104,7 @@ class CountrySide
         {
             // Create an instance of StreamReader to read from a file.
             // The using statement also closes the StreamReader.
-            using (StreamReader sr = new StreamReader("U:/Users/735740/names.txt"))
+            using (StreamReader sr = new StreamReader("c:/area51/annoucement.txt"))
             {
                 string line;
 
@@ -144,5 +147,6 @@ class Village
     public int distanceFromPreviousVillage;
     public bool isAstrildgeHere;
 }
+
 
 
